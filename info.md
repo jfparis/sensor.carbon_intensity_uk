@@ -15,7 +15,7 @@ _Component to integrate with [Carbon Intensity UK][carbon_intensity_uk]._
 
 Platform | Description
 -- | --
-`sensor` | Show info from blueprint API.
+`sensor` | Show info from Carbon Intensity UK API.
 
 ![alt Sensor attributes][attributesimg]
 
@@ -23,7 +23,7 @@ Platform | Description
 ## Installation
 
 1. Click install.
-1. In the HA UI go to "Configuration" -> "Integrations" click "+" and search for "Blueprint".
+1. In the HA UI go to "Configuration" -> "Integrations" click "+" and search for "Carbon Intensity UK".
 
 {% endif %}
 

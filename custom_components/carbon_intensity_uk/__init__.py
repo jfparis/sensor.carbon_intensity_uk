@@ -2,7 +2,7 @@
 Custom integration to integrate UK Carbon Intensity API with Home Assistant.
 
 For more details about this integration, please refer to
-https://github.com/custom-components/carbon_intensity_uk
+https://github.com/jscruz/sensor.carbon_intensity_uk
 """
 import asyncio
 import logging

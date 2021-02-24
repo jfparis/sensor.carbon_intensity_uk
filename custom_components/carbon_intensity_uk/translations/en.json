@@ -4,7 +4,7 @@
         "step": {
             "user": {
                 "title": "Carbon Intensity UK",
-                "description": "If you need help with the configuration have a look here: https://github.com/custom-components/carbon_intensity_uk",
+                "description": "If you need help with the configuration have a look here: https://github.com/jscruz/sensor.carbon_intensity_uk",
                 "data": {
                     "postcode": "UK Postcode (e.g. SW1)"
                 }

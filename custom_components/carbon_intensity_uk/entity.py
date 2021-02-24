@@ -45,5 +45,5 @@ class CarbonIntensityEntity(entity.Entity):
         )
 
     async def async_update(self):
-        """Update Brother entity."""
+        """Update Carbon Intensity UK entity."""
         await self.coordinator.async_request_refresh()
