@@ -3,7 +3,7 @@
 NAME = "Carbon Intensity UK"
 DOMAIN = "carbon_intensity_uk"
 DOMAIN_DATA = f"{DOMAIN}_data"
-VERSION = "0.0.1"
+VERSION = "0.0.3"
 
 ISSUE_URL = "https://github.com/jscruz/sensor.carbon_intensity_uk/issues"
 
