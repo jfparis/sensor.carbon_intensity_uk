@@ -24,10 +24,18 @@ PLATFORMS = [SENSOR]
 # Configuration and options
 CONF_ENABLED = "enabled"
 CONF_POSTCODE = "postcode"
+CONF_TARGET = "target"
 
 # Defaults
 DEFAULT_NAME = DOMAIN
 
+INTENSITY = {
+    "very_low" : 0,
+    "low" : 1,
+    "moderate": 2,
+    "high": 3,
+    "very_high": 4,
+}
 
 STARTUP_MESSAGE = f"""
 -------------------------------------------------------------------

@@ -7,6 +7,7 @@ from custom_components.carbon_intensity_uk.const import (
     LOW_ICON,
     MODERATE_ICON,
     SENSOR,
+    INTENSITY,
 )
 from custom_components.carbon_intensity_uk.entity import CarbonIntensityEntity
 
@@ -34,11 +35,12 @@ class CarbonIntensitySensor(CarbonIntensityEntity):
     def icon(self):
         """Return the icon of the sensor."""
         index = self.coordinator.data.get("current_period_index")
-        if index == "high":
+        intensity = INTENSITY[index]
+        if intensity >= INTENSITY["high"]:
             return HIGH_ICON
-        elif index == "moderate":
+        elif intensity == INTENSITY["moderate"]:
             return MODERATE_ICON
-        elif index == "low":
+        elif intensity <= INTENSITY["low"]:
             return LOW_ICON
         else:
             return ICON
