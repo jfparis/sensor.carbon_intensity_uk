@@ -12,7 +12,7 @@ from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import Config, HomeAssistant
 from homeassistant.exceptions import ConfigEntryNotReady
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
-from carbonintensity.client import Client as CarbonIntentisityApi
+from .client import Client as CarbonIntentisityApi
 
 from .const import (
     CONF_POSTCODE,
