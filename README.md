@@ -51,6 +51,8 @@ custom_components/carbon_intensity_uk/switch.py
 
 ## Example Markdown card
 
+![alt Example card](markdowncard.png)
+
 ```
 {% set t_start = (  state_attr('sensor.carbon_intensity_uk','optimal_window_from') - now()).total_seconds() %}
 {% set t_end = (  state_attr('sensor.carbon_intensity_uk','optimal_window_to') - now()).total_seconds() %}
@@ -62,6 +64,8 @@ Starting in {{ t_start | timestamp_custom('%-H hr %-M min' if t_start > 3600 els
 ```
 
 ## Display forecast in html card
+
+![alt Example card with a forecast](forecastcard.png)
 
 ```
 type: custom:html-template-card
