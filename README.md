@@ -49,6 +49,39 @@ custom_components/carbon_intensity_uk/sensor.py
 custom_components/carbon_intensity_uk/switch.py
 ```
 
+## Example Markdown card
+
+```
+{% set t_start = (  state_attr('sensor.carbon_intensity_uk','optimal_window_from') - now()).total_seconds() %}
+{% set t_end = (  state_attr('sensor.carbon_intensity_uk','optimal_window_to') - now()).total_seconds() %}
+
+
+The best time to run energy hungry devices is between {{ as_timestamp(state_attr('sensor.carbon_intensity_uk','optimal_window_from')) | timestamp_custom('%I:%M %p')  }} and {{ as_timestamp(state_attr('sensor.carbon_intensity_uk','optimal_window_to')) | timestamp_custom('%I:%M %p')  }}.
+Starting in {{ t_start | timestamp_custom('%-H hr %-M min' if t_start > 3600 else '%-M min', false) }} and finishing {{ t_end | timestamp_custom('%-H hr %-M min' if t_end > 3600 else '%-M min', false) }} from now.
+
+```
+
+## Display forecast in html card
+
+```
+type: custom:html-template-card
+title: Energy Intensity Forecast
+ignore_line_breaks: true
+content: >
+  <style> table {    width: 100%;   } tr:nth-child(even) {     background-color:
+  #222222;   } td, th {     text-align: left;   } </style>  <table> <thead> <tr>
+  <th>Period</th> <th>Index</th>  <th>Intensity</th> </tr></thead> <tbody>  {%
+  for state in   states.sensor.carbon_intensity_uk.attributes.forecast -%}  <tr
+  {% if state.optimal %}  style="background-color:#336600;"{%endif%}>
+    <td> {{ as_timestamp(state.from) | timestamp_custom('%I:%M %p') }} - {{ as_timestamp(state.to) | timestamp_custom('%I:%M %p')}}</td>
+    <td {% if state.index=='high' or state.index=='very high' %} style="color:#cc3300"{%endif%}
+    {% if state.index=='moderate' %} style="color:#ff9900"{%endif%} >  {{state.index}}</td>
+    <td {% if state.index=='high' or state.index=='very high' %} style="color:#cc3300"{%endif%}
+    {% if state.index=='moderate' %} style="color:#ff9900"{%endif%} >  {{state.intensity}}</td>
+  </tr>  {%- endfor %}   </tbody> </table> 
+```
+
+
 ## Configuration is done in the UI
 
 <!---->

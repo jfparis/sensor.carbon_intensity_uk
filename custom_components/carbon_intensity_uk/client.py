@@ -107,6 +107,7 @@ def generate_response(json_response, target='low'):
             "optimal_window_from" : hours_start[best],
             "optimal_window_to" : hours_end[best+3],
             "optimal_window_average_intensity" : average_intensity[best],
+            "optimal_window_average_index" : get_index(average_intensity[best]),
             "unit": "gCO2/kWh",
             "postcode": postcode,
             "forecast": hourly_forecast,
