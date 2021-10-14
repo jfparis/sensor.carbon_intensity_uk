@@ -3,6 +3,7 @@
   "name": "Carbon Intensity UK",
   "documentation": "",
   "dependencies": [],
+  "version": "0.0.3",
   "config_flow": true,
   "issue_tracker": "",
   "version": "0.1.1",
