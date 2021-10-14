@@ -34,7 +34,7 @@ class Client:
 
     async def async_raw_get_data(self, from_time=None):
         if from_time is None:
-            from_time = datetime.now()
+            from_time = datetime.utcnow()
         request_url = (
             "https://api.carbonintensity.org.uk/regional/intensity/%s/fw24h/postcode/%s"
             % (from_time.strftime("%Y-%m-%dT%H:%MZ"), self.postcode)
