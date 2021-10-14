@@ -9,10 +9,8 @@ from .client import Client as CarbonIntentisityApi
 
 from custom_components.carbon_intensity_uk.const import (  # pylint: disable=unused-import
     CONF_POSTCODE,
-    CONF_TARGET,
     DOMAIN,
     PLATFORMS,
-    INTENSITY,
 )
 
 
@@ -38,11 +36,10 @@ class CarbonIntensityFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
 
         if user_input is not None:
             valid = await self._test_credentials(user_input[CONF_POSTCODE])
-            valid = valid and user_input[CONF_TARGET] in INTENSITY.keys()
             if valid:
                 _LOGGER.debug("Input is valid")
                 return self.async_create_entry(
-                    title=f"{user_input[CONF_POSTCODE]}:{user_input[CONF_TARGET]}", data=user_input
+                    title=user_input[CONF_POSTCODE], data=user_input
                 )
             else:
                 _LOGGER.debug("Input not valid")
@@ -61,8 +58,7 @@ class CarbonIntensityFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
         """Show the configuration form to edit location data."""
         return self.async_show_form(
             step_id="user",
-            data_schema=vol.Schema({vol.Required(CONF_POSTCODE, ): str, 
-                                    vol.Required(CONF_TARGET, ): str,}),
+            data_schema=vol.Schema({vol.Required(CONF_POSTCODE): str,}),
             errors=self._errors,
         )
 
@@ -110,5 +106,5 @@ class CarbonIntensityOptionsFlowHandler(config_entries.OptionsFlow):
     async def _update_options(self):
         """Update config entry options."""
         return self.async_create_entry(
-            title=f"{self.config_entry.data.get(CONF_POSTCODE)}:{self.config_entry.data.get(CONF_TARGET)}", data=self.options
+            title=self.config_entry.data.get(CONF_POSTCODE), data=self.options
         )

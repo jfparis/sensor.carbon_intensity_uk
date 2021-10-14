@@ -6,14 +6,12 @@
                 "title": "Carbon Intensity UK",
                 "description": "If you need help with the configuration have a look here: https://github.com/custom-components/carbon_intensity_uk",
                 "data": {
-                    "postcode": "UK Postcode (e.g. SW1)",
-                    "target": "Acceptable intensity (e.g. low)"
+                    "postcode": "UK Postcode (e.g. SW1)"
                 }
             }
         },
         "error": {
-            "postcode": "Postcode is wrong.",
-            "target": "Please select from very low, low, moderate, high and very high"
+            "postcode": "Postcode is wrong."
         },
         "abort": {
             "single_instance_allowed": "Only a single configuration of Carbon Intensity UK is allowed."

@@ -16,7 +16,6 @@ from .client import Client as CarbonIntentisityApi
 
 from .const import (
     CONF_POSTCODE,
-    CONF_TARGET,
     DOMAIN,
     PLATFORMS,
     STARTUP_MESSAGE,

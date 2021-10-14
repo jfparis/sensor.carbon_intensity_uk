@@ -24,7 +24,6 @@ PLATFORMS = [SENSOR]
 # Configuration and options
 CONF_ENABLED = "enabled"
 CONF_POSTCODE = "postcode"
-CONF_TARGET = "target"
 
 # Defaults
 DEFAULT_NAME = DOMAIN

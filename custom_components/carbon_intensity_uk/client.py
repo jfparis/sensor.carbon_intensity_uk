@@ -2,11 +2,24 @@
 from datetime import datetime, timezone
 import aiohttp
 import logging
+import numpy as np
 
 from .const import INTENSITY
 
 _LOGGER = logging.getLogger(__name__)
 
+intensity_indexes = {
+    2021: [50, 140, 220, 330],
+    2022: [45, 130, 210, 310],
+    2023: [40, 120, 200, 290],
+    2024: [35, 110, 190, 270],
+    2025: [30, 100, 180, 250],
+    2026: [25, 90, 170, 230],
+    2027: [20, 80, 160, 210],
+    2028: [15, 70, 150, 190],
+    2029: [10, 60, 140, 170],
+    2030: [5, 50, 130, 150],
+}
 
 class Client:
     """Carbon Intensity API Client"""
@@ -37,73 +50,66 @@ class Client:
         return generate_response(raw_data, target)
 
 def generate_response(json_response, target='low'):
-    periods = dict()
+    intensities = []
+    period_start = []
+    period_end = []
     response = {}
-    #print(json_response)
     data = json_response["data"]["data"]
     postcode = json_response["data"]["postcode"]
-    
-    window_found = False
-    next_window = None
-    window_length = 0
-    max_intensity = INTENSITY[target]
-    time_to_next =  None
+
+    current_intensity_index = intensity_indexes[datetime.now().year]
+    def get_index(intensity):
+        if intensity < current_intensity_index[0]:
+            return "very low"
+        elif intensity < current_intensity_index[1]:
+            return "low"
+        elif intensity < current_intensity_index[2]:
+            return "moderate"
+        elif intensity < current_intensity_index[3]:
+            return "high"
+        else:
+            return "very high"
 
     for period in data:
-        periods[period["intensity"]["forecast"]] = {
-            "from": period["from"],
-            "to": period["to"],
-            "index": period["intensity"]["index"],
-        }
+        period_start.append(datetime.strptime(
+                period["from"], "%Y-%m-%dT%H:%MZ"
+            ).replace(tzinfo=timezone.utc))
+        period_end.append(datetime.strptime(
+                period["to"], "%Y-%m-%dT%H:%MZ"
+            ).replace(tzinfo=timezone.utc))
+        intensities.append(period["intensity"]["forecast"])
 
-        if not window_found:
-            if INTENSITY[period["intensity"]["index"]] <= max_intensity:
-                window_length += 1
-                if window_length == 1:
-                    next_window = datetime.strptime(
-                                    period["from"], "%Y-%m-%dT%H:%MZ"
-                                    ).replace(tzinfo=timezone.utc)
-                if window_length >=4:
-                    window_found = True
-            else:
-                window_length = 0
-                next_window = None
+    intensity_array = np.array(intensities)
+    hourly_intensities = np.convolve(intensity_array, np.ones(2)/2 , 'valid')[::2]
 
-    if window_found:
-        if next_window < datetime.now(tz=timezone.utc):
-            time_to_next = 0
-        else:
-            delta = next_window - datetime.now(tz=timezone.utc)
-            seconds = delta.total_seconds()
-            time_to_next = round(seconds / 3600)
-        
-    else:
-        print("no window found")
+    hours_start = period_start[::2]
+    hours_end = period_end[1::2]
 
-    minimum_key = min(periods.keys())
+    average_intensity  = np.convolve(hourly_intensities, np.ones(4)/4 , 'valid')
+    best = np.argmin(hourly_intensities)
+
+    hourly_forecast = []
+    for i in range(len(hours_start)):
+        hourly_forecast.append({
+            "from":      hours_start[i],
+            "to":        hours_end[i],
+            "intensity": hourly_intensities[i],
+            "index":     get_index(hourly_intensities[i]),
+            "optimal":   True if hours_start[i]>=hours_start[best] and hours_end[i]<=hours_end[best+3] else False,
+        })
 
     response = {
         "data": {
-            "current_period_from": datetime.strptime(
-                data[0]["from"], "%Y-%m-%dT%H:%MZ"
-            ).replace(tzinfo=timezone.utc),
-            "current_period_to": datetime.strptime(
-                data[0]["to"], "%Y-%m-%dT%H:%MZ"
-            ).replace(tzinfo=timezone.utc),
-            "current_period_forecast": data[0]["intensity"]["forecast"],
-            "current_period_index": data[0]["intensity"]["index"],
-            "lowest_period_from": datetime.strptime(
-                periods[minimum_key]["from"], "%Y-%m-%dT%H:%MZ"
-            ).replace(tzinfo=timezone.utc),
-            "lowest_period_to": datetime.strptime(
-                periods[minimum_key]["to"], "%Y-%m-%dT%H:%MZ"
-            ).replace(tzinfo=timezone.utc),
-            "lowest_period_forecast": minimum_key,
-            "lowest_period_index": periods[minimum_key]["index"],
-            "next_matching_window" : next_window,
-            "time_from_now": time_to_next,
+            "current_period_from": hourly_forecast[0]["from"],
+            "current_period_to": hourly_forecast[0]["to"],
+            "current_period_forecast": hourly_forecast[0]["intensity"],
+            "current_period_index": hourly_forecast[0]["index"],
+            "optimal_window_from" : hours_start[best],
+            "optimal_window_to" : hours_end[best+3],
+            "optimal_window_average_intensity" : average_intensity[best],
             "unit": "gCO2/kWh",
             "postcode": postcode,
+            "forecast": hourly_forecast,
         }
     }
     return response
