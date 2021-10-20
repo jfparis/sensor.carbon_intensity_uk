@@ -70,6 +70,11 @@ def generate_response(json_response, target='low'):
         else:
             return "very high"
 
+    if len(data) % 2 == 1:
+        # odd number of sample. We must have called exactly at the beginning of a period
+        # and the first item is outdated
+        data.pop(0) 
+
     for period in data:
         period_start.append(datetime.strptime(
                 period["from"], "%Y-%m-%dT%H:%MZ"
