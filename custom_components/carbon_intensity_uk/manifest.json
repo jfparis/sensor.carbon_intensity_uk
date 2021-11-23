@@ -1,7 +1,7 @@
 {
   "domain": "carbon_intensity_uk",
   "name": "Carbon Intensity UK",
-  "documentation": "",
+  "documentation": "https://github.com/jfparis/sensor.carbon_intensity_uk",
   "dependencies": [],
   "version": "0.0.3",
   "config_flow": true,
