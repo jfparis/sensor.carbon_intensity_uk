@@ -85,6 +85,55 @@ content: >
   </tr>  {%- endfor %}   </tbody> </table> 
 ```
 
+## Display forecast in html card
+
+![alt Example card forecast graph](graph.png)
+
+```
+type: custom:apexcharts-card
+experimental:
+  color_threshold: true
+graph_span: 2d
+span:
+  start: minute
+update_interval: 1min
+series:
+  - entity: sensor.carbon_intensity_uk
+    unit: g/kWh
+    name: Carbon Intensity g/kWh
+    show:
+      legend_value: false
+    data_generator: |
+      return entity.attributes.forecast.map(obj => {
+        return [new Date(obj.from).getTime(), obj.intensity];
+      });
+    color_threshold:
+      - value: 25
+        color: darkgreen
+        opacity: 1
+      - value: 95
+        color: green
+      - value: 180
+        color: gold
+      - value: 279
+        color: red
+      - value: 330
+        color: darkred
+  - entity: sensor.carbon_intensity_uk
+    type: area
+    unit: g/kWh
+    color: green
+    name: Optimal Window
+    stroke_width: 0
+    show:
+      legend_value: false
+    data_generator: |
+      return entity.attributes.forecast.map(obj => {
+        return [new Date(obj.from).getTime(), (obj.optimal ? obj.intensity : 0 )];
+      });
+```
+
+
 
 ## Configuration is done in the UI
 
