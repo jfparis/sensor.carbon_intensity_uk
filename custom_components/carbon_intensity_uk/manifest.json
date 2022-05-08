@@ -3,10 +3,9 @@
   "name": "Carbon Intensity UK",
   "documentation": "https://github.com/jfparis/sensor.carbon_intensity_uk",
   "dependencies": [],
-  "version": "0.0.3",
   "config_flow": true,
   "issue_tracker": "",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "codeowners": [
     "@jscruz",
     "@jfparis"

@@ -3,7 +3,7 @@
 NAME = "Carbon Intensity UK"
 DOMAIN = "carbon_intensity_uk"
 DOMAIN_DATA = f"{DOMAIN}_data"
-VERSION = "0.0.3"
+VERSION = "0.2.0"
 
 ISSUE_URL = "https://github.com/jscruz/sensor.carbon_intensity_uk/issues"
 
@@ -29,11 +29,11 @@ CONF_POSTCODE = "postcode"
 DEFAULT_NAME = DOMAIN
 
 INTENSITY = {
-    "very_low" : 0,
+    "very low" : 0,
     "low" : 1,
     "moderate": 2,
     "high": 3,
-    "very_high": 4,
+    "very high": 4,
 }
 
 STARTUP_MESSAGE = f"""
