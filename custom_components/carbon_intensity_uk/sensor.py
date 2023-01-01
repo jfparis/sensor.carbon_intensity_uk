@@ -1,15 +1,15 @@
 """Sensor platform for carbon intensity UK."""
-from custom_components.carbon_intensity_uk.const import (
+from .const import (
     DEFAULT_NAME,
     DOMAIN,
-    ICON,
     HIGH_ICON,
+    ICON,
+    INTENSITY,
     LOW_ICON,
     MODERATE_ICON,
     SENSOR,
-    INTENSITY,
 )
-from custom_components.carbon_intensity_uk.entity import CarbonIntensityEntity
+from .entity import CarbonIntensityEntity
 
 
 async def async_setup_entry(hass, entry, async_add_devices):
@@ -35,12 +35,13 @@ class CarbonIntensitySensor(CarbonIntensityEntity):
     def icon(self):
         """Return the icon of the sensor."""
         index = self.coordinator.data.get("current_period_index")
-        intensity = INTENSITY[index]
-        if intensity >= INTENSITY["high"]:
-            return HIGH_ICON
-        elif intensity == INTENSITY["moderate"]:
-            return MODERATE_ICON
-        elif intensity <= INTENSITY["low"]:
-            return LOW_ICON
-        else:
+        try:
+            intensity = INTENSITY[index]
+            if intensity >= INTENSITY["high"]:
+                return HIGH_ICON
+            elif intensity == INTENSITY["moderate"]:
+                return MODERATE_ICON
+            else:
+                return LOW_ICON
+        except KeyError:
             return ICON

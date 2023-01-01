@@ -21,6 +21,7 @@ intensity_indexes = {
     2030: [5, 50, 130, 150],
 }
 
+
 class Client:
     """Carbon Intensity API Client"""
 
@@ -45,11 +46,12 @@ class Client:
                 json_response = await resp.json()
                 return json_response
 
-    async def async_get_data(self, from_time=None, target='low'):
+    async def async_get_data(self, from_time=None, target="low"):
         raw_data = await self.async_raw_get_data(from_time)
         return generate_response(raw_data, target)
 
-def generate_response(json_response, target='low'):
+
+def generate_response(json_response, target="low"):
     intensities = []
     period_start = []
     period_end = []
@@ -59,6 +61,7 @@ def generate_response(json_response, target='low'):
     two_day_forecast = True
 
     current_intensity_index = intensity_indexes[datetime.now().year]
+
     def get_index(intensity):
         if intensity < current_intensity_index[0]:
             return "very low"
@@ -72,7 +75,9 @@ def generate_response(json_response, target='low'):
             return "very high"
 
     # sanitise input length
-    if datetime.strptime(data[0]["to"], "%Y-%m-%dT%H:%MZ").replace(tzinfo=timezone.utc) < datetime.utcnow().replace(tzinfo=timezone.utc):
+    if datetime.strptime(data[0]["to"], "%Y-%m-%dT%H:%MZ").replace(
+        tzinfo=timezone.utc
+    ) < datetime.utcnow().replace(tzinfo=timezone.utc):
         data.pop(0)
     if len(data) > 96:
         data = data[0:96]
@@ -84,39 +89,56 @@ def generate_response(json_response, target='low'):
         two_day_forecast = False
 
     for period in data:
-        period_start.append(datetime.strptime(
-                period["from"], "%Y-%m-%dT%H:%MZ"
-            ).replace(tzinfo=timezone.utc))
-        period_end.append(datetime.strptime(
-                period["to"], "%Y-%m-%dT%H:%MZ"
-            ).replace(tzinfo=timezone.utc))
+        period_start.append(
+            datetime.strptime(period["from"], "%Y-%m-%dT%H:%MZ").replace(
+                tzinfo=timezone.utc
+            )
+        )
+        period_end.append(
+            datetime.strptime(period["to"], "%Y-%m-%dT%H:%MZ").replace(
+                tzinfo=timezone.utc
+            )
+        )
         intensities.append(period["intensity"]["forecast"])
-  
+
     intensity_array = np.array(intensities)
-    hourly_intensities = np.convolve(intensity_array, np.ones(2)/2 , 'valid')[::2]
+    hourly_intensities = np.convolve(intensity_array, np.ones(2) / 2, "valid")[::2]
 
     hours_start = period_start[::2]
     hours_end = period_end[1::2]
 
-    average_intensity24h  = np.convolve(hourly_intensities[:24], np.ones(4)/4 , 'valid')
+    average_intensity24h = np.convolve(hourly_intensities[:24], np.ones(4) / 4, "valid")
     best24h = np.argmin(average_intensity24h)
 
     if two_day_forecast:
-        average_intensity48h  = np.convolve(hourly_intensities[24:], np.ones(4)/4 , 'valid')
+        average_intensity48h = np.convolve(
+            hourly_intensities[24:], np.ones(4) / 4, "valid"
+        )
         best48h = np.argmin(average_intensity48h)
     else:
         best48h = 0
 
     hourly_forecast = []
     for i in range(len(hours_start)):
-        hourly_forecast.append({
-            "from":      hours_start[i],
-            "to":        hours_end[i],
-            "intensity": hourly_intensities[i],
-            "index":     get_index(hourly_intensities[i]),
-            "optimal":   True if (hours_start[i]>=hours_start[best24h] and hours_end[i]<=hours_end[best24h+3]) or \
-                                 (two_day_forecast and hours_start[i]>=hours_start[best48h+24] and hours_end[i]<=hours_end[best48h+3+24]) else False,
-        })
+        hourly_forecast.append(
+            {
+                "from": hours_start[i],
+                "to": hours_end[i],
+                "intensity": hourly_intensities[i],
+                "index": get_index(hourly_intensities[i]),
+                "optimal": True
+                if (
+                    hours_start[i] >= hours_start[best24h]
+                    and hours_end[i] <= hours_end[best24h + 3]
+                )
+                or (
+                    two_day_forecast
+                    and hours_start[i] >= hours_start[best48h + 24]
+                    and hours_end[i] <= hours_end[best48h + 3 + 24]
+                )
+                else False,
+            }
+        )
 
     response = {
         "data": {
@@ -124,14 +146,22 @@ def generate_response(json_response, target='low'):
             "current_period_to": hourly_forecast[0]["to"],
             "current_period_forecast": hourly_forecast[0]["intensity"],
             "current_period_index": hourly_forecast[0]["index"],
-            "optimal_window_from" : hours_start[best24h],
-            "optimal_window_to" : hours_end[best24h+3],
-            "optimal_window_forecast" : average_intensity24h[best24h],
-            "optimal_window_index" : get_index(average_intensity24h[best24h]),
-            "optimal_window_48_from" : hours_start[best48h+24] if two_day_forecast else None,
-            "optimal_window_48_to" : hours_end[best48h+3+24] if two_day_forecast else None,
-            "optimal_window_48_forecast" : average_intensity48h[best48h] if two_day_forecast else None, # no need for +24 as we are reading from a reduced array
-            "optimal_window_48_index" : get_index(average_intensity48h[best48h]) if two_day_forecast else None,
+            "optimal_window_from": hours_start[best24h],
+            "optimal_window_to": hours_end[best24h + 3],
+            "optimal_window_forecast": average_intensity24h[best24h],
+            "optimal_window_index": get_index(average_intensity24h[best24h]),
+            "optimal_window_48_from": hours_start[best48h + 24]
+            if two_day_forecast
+            else None,
+            "optimal_window_48_to": hours_end[best48h + 3 + 24]
+            if two_day_forecast
+            else None,
+            "optimal_window_48_forecast": average_intensity48h[best48h]
+            if two_day_forecast
+            else None,  # no need for +24 as we are reading from a reduced array
+            "optimal_window_48_index": get_index(average_intensity48h[best48h])
+            if two_day_forecast
+            else None,
             "unit": "gCO2/kWh",
             "postcode": postcode,
             "forecast": hourly_forecast,

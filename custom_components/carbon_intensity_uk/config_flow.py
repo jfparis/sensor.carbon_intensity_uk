@@ -3,11 +3,12 @@ import voluptuous as vol
 from homeassistant import config_entries
 from homeassistant.core import callback
 import logging
+
 _LOGGER = logging.getLogger(__name__)
 
 from .client import Client as CarbonIntentisityApi
 
-from custom_components.carbon_intensity_uk.const import (  # pylint: disable=unused-import
+from .const import (  # pylint: disable=unused-import
     CONF_POSTCODE,
     DOMAIN,
     PLATFORMS,
@@ -58,7 +59,11 @@ class CarbonIntensityFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
         """Show the configuration form to edit location data."""
         return self.async_show_form(
             step_id="user",
-            data_schema=vol.Schema({vol.Required(CONF_POSTCODE): str,}),
+            data_schema=vol.Schema(
+                {
+                    vol.Required(CONF_POSTCODE): str,
+                }
+            ),
             errors=self._errors,
         )
 

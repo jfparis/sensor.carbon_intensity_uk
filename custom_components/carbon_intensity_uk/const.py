@@ -8,10 +8,11 @@ VERSION = "0.2.0"
 ISSUE_URL = "https://github.com/jscruz/sensor.carbon_intensity_uk/issues"
 
 # Icons
-ICON = "mdi:leaf"
 LOW_ICON = "mdi:leaf"
 MODERATE_ICON = "mdi:factory"
 HIGH_ICON = "mdi:smog"
+ICON = LOW_ICON
+
 
 # Device classes
 BINARY_SENSOR_DEVICE_CLASS = "connectivity"
@@ -29,8 +30,8 @@ CONF_POSTCODE = "postcode"
 DEFAULT_NAME = DOMAIN
 
 INTENSITY = {
-    "very low" : 0,
-    "low" : 1,
+    "very low": 0,
+    "low": 1,
     "moderate": 2,
     "high": 3,
     "very high": 4,
