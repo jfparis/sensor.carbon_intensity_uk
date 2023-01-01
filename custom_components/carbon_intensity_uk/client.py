@@ -1,7 +1,8 @@
 """Client."""
 from datetime import datetime, timezone
-import aiohttp
 import logging
+
+import aiohttp
 import numpy as np
 
 from .const import INTENSITY
@@ -47,8 +48,17 @@ class Client:
                 return json_response
 
     async def async_get_data(self, from_time=None, target="low"):
-        raw_data = await self.async_raw_get_data(from_time)
-        return generate_response(raw_data, target)
+        try:
+            raw_data = await self.async_raw_get_data(from_time)
+        except aiohttp.ClientError as err:
+            _LOGGER.exception("Exception whilst fetching data: ")
+            raise err
+        try:
+            data = generate_response(raw_data, target)
+        except Exception as err:
+            _LOGGER.exception("Exception whilst processing data: ")
+            raise err
+        return data
 
 
 def generate_response(json_response, target="low"):
