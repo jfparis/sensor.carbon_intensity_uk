@@ -5,21 +5,16 @@ For more details about this integration, please refer to
 https://github.com/jscruz/sensor.carbon_intensity_uk
 """
 import asyncio
-import logging
 from datetime import timedelta
+import logging
 
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import Config, HomeAssistant
 from homeassistant.exceptions import ConfigEntryNotReady
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
-from .client import Client as CarbonIntentisityApi
 
-from .const import (
-    CONF_POSTCODE,
-    DOMAIN,
-    PLATFORMS,
-    STARTUP_MESSAGE,
-)
+from .client import Client as CarbonIntentisityApi
+from .const import CONF_POSTCODE, DOMAIN, PLATFORMS, STARTUP_MESSAGE
 
 SCAN_INTERVAL = timedelta(seconds=600)
 

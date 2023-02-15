@@ -91,11 +91,11 @@ def generate_response(json_response, target="low"):
         data.pop(0)
     if len(data) > 96:
         data = data[0:96]
-    if len(data) < 48:
-        return {"error": "malformed data"}
+    #if len(data) < 48:
+    #    return {"error": "malformed data"}
     if len(data) % 2 == 1:
         data.pop(-1)
-    if len(data) < 56:
+    if len(data) < 56: # 48+8 (one day plus 1 four hour period)
         two_day_forecast = False
 
     for period in data:
@@ -117,7 +117,8 @@ def generate_response(json_response, target="low"):
     hours_start = period_start[::2]
     hours_end = period_end[1::2]
 
-    average_intensity24h = np.convolve(hourly_intensities[:24], np.ones(4) / 4, "valid")
+    first_day_length = min(24,hourly_intensities.shape[0])
+    average_intensity24h = np.convolve(hourly_intensities[:first_day_length], np.ones(4) / 4, "valid")
     best24h = np.argmin(average_intensity24h)
 
     if two_day_forecast:
