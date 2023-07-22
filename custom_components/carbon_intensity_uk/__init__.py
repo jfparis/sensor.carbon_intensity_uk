@@ -5,8 +5,8 @@ For more details about this integration, please refer to
 https://github.com/jscruz/sensor.carbon_intensity_uk
 """
 import asyncio
-from datetime import timedelta
 import logging
+from datetime import timedelta
 
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import Config, HomeAssistant
@@ -66,7 +66,10 @@ class CarbonIntensityDataUpdateCoordinator(DataUpdateCoordinator):
         self.platforms = []
 
         super().__init__(
-            hass, _LOGGER, name=DOMAIN, update_interval=SCAN_INTERVAL,
+            hass,
+            _LOGGER,
+            name=DOMAIN,
+            update_interval=SCAN_INTERVAL,
         )
 
     async def _async_update_data(self):

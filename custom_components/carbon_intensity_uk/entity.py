@@ -1,7 +1,7 @@
 """CarbonIntensityEntity class"""
 from homeassistant.helpers import entity
 
-from .const import DOMAIN, VERSION, NAME
+from .const import DOMAIN, NAME, VERSION
 
 
 class CarbonIntensityEntity(entity.Entity):

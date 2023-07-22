@@ -1,18 +1,14 @@
 """Adds config flow for Carbon Intensity."""
+import logging
+
 import voluptuous as vol
 from homeassistant import config_entries
 from homeassistant.core import callback
-import logging
 
 _LOGGER = logging.getLogger(__name__)
 
 from .client import Client as CarbonIntentisityApi
-
-from .const import (  # pylint: disable=unused-import
-    CONF_POSTCODE,
-    DOMAIN,
-    PLATFORMS,
-)
+from .const import CONF_POSTCODE, DOMAIN, PLATFORMS  # pylint: disable=unused-import
 
 
 class CarbonIntensityFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
