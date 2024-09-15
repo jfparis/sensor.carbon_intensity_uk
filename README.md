@@ -65,6 +65,8 @@ Starting in {{ t_start | timestamp_custom('%-H hr %-M min' if t_start > 3600 els
 
 ## Display forecast in html card
 
+This requires the [Lovelace HTML Jinja2 Template card](https://github.com/PiotrMachowski/Home-Assistant-Lovelace-HTML-Jinja2-Template-card):
+
 ![alt Example card with a forecast](forecastcard.png)
 
 ```
