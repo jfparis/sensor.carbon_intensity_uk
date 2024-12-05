@@ -2,10 +2,10 @@
   "domain": "carbon_intensity_uk",
   "name": "Carbon Intensity UK",
   "documentation": "https://github.com/jfparis/sensor.carbon_intensity_uk",
+  "issue_tracker": "https://github.com/jfparis/sensor.carbon_intensity_uk/issues",
   "dependencies": [],
   "config_flow": true,
-  "issue_tracker": "",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "codeowners": [
     "@jscruz",
     "@jfparis"
